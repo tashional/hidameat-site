@@ -3,18 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>飛騨ミート 和牛去勢 計 加重平均</title>
+  <title>JA飛騨ミート 牛枝肉相場ダッシュボード</title>
   <style>
     :root {
-      --bg: #f5efe5;
-      --paper: rgba(255, 250, 243, 0.9);
-      --ink: #1f1a17;
-      --muted: #685f58;
-      --line: rgba(92, 63, 37, 0.18);
-      --accent: #a23e2c;
-      --accent-soft: #eab68f;
-      --accent-2: #245e55;
-      --shadow: 0 18px 45px rgba(65, 44, 28, 0.12);
+      --bg: #0e0c0b;
+      --bg-deep: #171311;
+      --paper: rgba(27, 21, 18, 0.86);
+      --paper-strong: rgba(20, 16, 14, 0.96);
+      --ink: #f6ead2;
+      --muted: #cbb795;
+      --line: rgba(212, 168, 88, 0.18);
+      --accent: #d6aa55;
+      --accent-dark: #a97a25;
+      --forest: #e1c274;
+      --forest-soft: rgba(214, 170, 85, 0.12);
+      --glow: rgba(222, 174, 82, 0.24);
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.35);
     }
 
     * {
@@ -26,93 +30,249 @@
       font-family: "Avenir Next", "Hiragino Sans", "Yu Gothic", sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(234, 182, 143, 0.7), transparent 35%),
-        linear-gradient(180deg, #fbf5ec 0%, #f2e8db 100%);
+        radial-gradient(circle at top left, rgba(214, 170, 85, 0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(255, 223, 148, 0.08), transparent 24%),
+        linear-gradient(180deg, #171210 0%, var(--bg) 46%, var(--bg-deep) 100%);
+    }
+
+    a {
+      color: inherit;
     }
 
     .wrap {
-      width: min(1120px, calc(100% - 32px));
-      margin: 32px auto 48px;
+      width: min(1160px, calc(100% - 32px));
+      margin: 28px auto 52px;
     }
 
     .hero {
-      padding: 28px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255, 249, 240, 0.96), rgba(252, 240, 226, 0.88));
-      box-shadow: var(--shadow);
-      overflow: hidden;
       position: relative;
+      overflow: hidden;
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      background:
+        linear-gradient(125deg, rgba(24, 19, 17, 0.98), rgba(34, 27, 23, 0.94)),
+        radial-gradient(circle at bottom right, rgba(214, 170, 85, 0.1), transparent 35%);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -140px auto auto -120px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--glow), transparent 70%);
+      z-index: -1;
     }
 
     .hero::after {
       content: "";
       position: absolute;
-      inset: auto -80px -90px auto;
-      width: 240px;
-      height: 240px;
+      inset: auto -70px -110px auto;
+      width: 280px;
+      height: 280px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(162, 62, 44, 0.18), transparent 70%);
-      pointer-events: none;
+      background: radial-gradient(circle, rgba(214, 170, 85, 0.14), transparent 68%);
+      z-index: -1;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
     }
 
     .eyebrow {
       display: inline-flex;
-      gap: 8px;
       align-items: center;
-      padding: 6px 12px;
+      gap: 10px;
+      padding: 7px 14px;
       border-radius: 999px;
-      background: rgba(36, 94, 85, 0.09);
-      color: var(--accent-2);
+      background: var(--forest-soft);
+      color: var(--forest);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.04em;
     }
 
+    .eyebrow::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 6px rgba(29, 94, 84, 0.1);
+    }
+
+    .hero-kicker {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 180px;
+      padding: 14px 18px;
+      border-radius: 24px;
+      background: rgba(255, 246, 227, 0.95);
+      border: 1px solid rgba(214, 170, 85, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .hero-brand img {
+      display: block;
+      width: 100%;
+      max-width: 150px;
+      height: auto;
+    }
+
     h1 {
-      margin: 18px 0 10px;
-      font-size: clamp(30px, 6vw, 56px);
-      line-height: 1.05;
-      letter-spacing: -0.03em;
+      max-width: 900px;
+      margin: 18px 0 14px;
+      font-size: clamp(34px, 6.2vw, 68px);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
     }
 
     .lead {
-      max-width: 720px;
+      max-width: 760px;
       margin: 0;
       color: var(--muted);
-      font-size: 16px;
-      line-height: 1.7;
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      background: linear-gradient(135deg, #f0c46c, var(--accent-dark));
+      color: #17110e;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.28);
+    }
+
+    .button-secondary {
+      background: rgba(255, 244, 218, 0.08);
+      border-color: rgba(214, 170, 85, 0.16);
+      color: var(--ink);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.95fr);
+      gap: 22px;
+      margin-top: 28px;
+      align-items: stretch;
+    }
+
+    .hero-chart-card {
+      padding: 18px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(30, 24, 21, 0.98), rgba(22, 18, 16, 0.9));
+      border: 1px solid rgba(214, 170, 85, 0.12);
+    }
+
+    .hero-chart-title {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: -0.03em;
     }
 
     .stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
-      margin-top: 24px;
+      margin-top: 20px;
     }
 
     .stat {
       padding: 18px 18px 16px;
       border-radius: 22px;
-      background: var(--paper);
-      border: 1px solid var(--line);
-      backdrop-filter: blur(8px);
+      background: rgba(255, 246, 227, 0.04);
+      border: 1px solid rgba(214, 170, 85, 0.12);
+      backdrop-filter: blur(10px);
     }
 
     .stat-label {
       display: block;
       font-size: 12px;
       color: var(--muted);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
     .stat-value {
       display: block;
       margin-top: 8px;
-      font-size: clamp(22px, 4vw, 34px);
+      font-size: clamp(23px, 3vw, 36px);
       font-weight: 800;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-card {
+      padding: 20px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(32, 26, 22, 0.96), rgba(23, 18, 16, 0.88));
+      border: 1px solid rgba(214, 170, 85, 0.12);
+    }
+
+    .hero-card h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .hero-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .hero-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .hero-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 244, 218, 0.05);
+      border: 1px solid rgba(214, 170, 85, 0.1);
+      font-size: 14px;
     }
 
     .grid {
@@ -123,54 +283,55 @@
     }
 
     .panel {
-      padding: 22px;
-      border-radius: 26px;
+      padding: 24px;
+      border-radius: 28px;
       border: 1px solid var(--line);
-      background: rgba(255, 252, 247, 0.86);
+      background: rgba(23, 18, 16, 0.9);
       box-shadow: var(--shadow);
     }
 
     .panel h2 {
-      margin: 0 0 8px;
-      font-size: 22px;
+      margin: 0 0 10px;
+      font-size: 24px;
+      letter-spacing: -0.03em;
     }
 
     .panel p {
       margin: 0 0 18px;
       color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .chart-card {
-      min-height: 520px;
+      line-height: 1.7;
     }
 
     #chart {
       width: 100%;
       height: auto;
       display: block;
-      border-radius: 18px;
+      border-radius: 20px;
       background:
-        linear-gradient(180deg, rgba(162, 62, 44, 0.05), transparent 28%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(250, 243, 233, 0.94));
-      border: 1px solid rgba(92, 63, 37, 0.1);
+        linear-gradient(180deg, rgba(214, 170, 85, 0.14), transparent 32%),
+        linear-gradient(180deg, rgba(26, 21, 18, 0.96), rgba(20, 16, 14, 0.94));
+      border: 1px solid rgba(214, 170, 85, 0.12);
     }
 
     .meta-list {
       display: grid;
-      gap: 10px;
-      margin-top: 16px;
+      gap: 11px;
+      margin-top: 18px;
     }
 
     .meta-item {
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255, 249, 240, 0.8);
-      border: 1px solid rgba(92, 63, 37, 0.1);
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(255, 244, 218, 0.04);
+      border: 1px solid rgba(214, 170, 85, 0.1);
       font-size: 14px;
+    }
+
+    .meta-item strong {
+      text-align: right;
     }
 
     table {
@@ -181,8 +342,8 @@
 
     th,
     td {
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(92, 63, 37, 0.12);
+      padding: 13px 10px;
+      border-bottom: 1px solid rgba(214, 170, 85, 0.12);
       text-align: left;
       font-size: 14px;
     }
@@ -193,24 +354,43 @@
     }
 
     tbody tr:hover {
-      background: rgba(162, 62, 44, 0.05);
+      background: rgba(214, 170, 85, 0.05);
     }
 
     .note {
       margin-top: 18px;
       font-size: 13px;
       color: var(--muted);
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
     .note a {
-      color: var(--accent);
+      color: #f0c46c;
+      font-weight: 700;
     }
 
-    @media (max-width: 900px) {
-      .stats,
-      .grid {
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      text-decoration: none;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .grid,
+      .stats {
         grid-template-columns: 1fr;
+      }
+
+      .hero-top {
+        flex-direction: column;
+      }
+
+      .hero-brand {
+        min-width: 0;
+        max-width: 180px;
       }
 
       .chart-card {
@@ -222,32 +402,69 @@
 <body>
   <div class="wrap">
     <section class="hero">
-      <div class="eyebrow">JA飛騨ミート / 牛枝肉相場</div>
-      <h1>和牛 去勢 計 の加重平均を<br>時系列で可視化</h1>
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">JA飛騨ミート / 牛枝肉相場</div>
+          <p class="hero-kicker">公開画像から「和牛 / 去勢 / 計 / 加重平均」を抽出して可視化</p>
+        </div>
+        <div class="hero-brand">
+          <img src="./assets/hidagyu-logo.svg" alt="飛騨牛ロゴ">
+        </div>
+      </div>
+
+      <h1>飛騨牛の競り価格の推移を<br>可視化しデータを蓄積</h1>
       <p class="lead">
-        JA飛騨ミートの公開画像から、各開催日の「和牛 / 去勢 / 計 / 加重平均」を抽出して並べたローカル閲覧用ページです。
-        抽出対象は公開中の 20 回分で、単位は税込円です。
+        JA飛騨ミートが公開している牛枝肉相場の画像をもとに、和牛・去勢・計の加重平均を時系列で整理したダッシュボードです。
+        毎週の動きを見やすくしつつ、公式の相場ページへすぐ移動できるようにしています。
       </p>
-      <div class="stats" id="stats"></div>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="https://hidameat.or.jp/market_post" target="_blank" rel="noreferrer">JA飛騨ミートの相場ページを見る</a>
+        <a class="button button-secondary" href="https://hidameat.or.jp/" target="_blank" rel="noreferrer">JA飛騨ミート公式サイト</a>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-chart-card">
+          <h2 class="hero-chart-title">価格推移グラフ</h2>
+          <svg id="chart" class="hero-chart" viewBox="0 0 860 500" role="img" aria-label="和牛去勢計加重平均の推移グラフ"></svg>
+        </div>
+        <aside class="hero-card">
+          <h2>このサイトでわかること</h2>
+          <p>
+            最新値だけでなく、どの週で上がったか下がったか、期間平均から見て高いのか低いのかまで一画面で追えます。
+          </p>
+          <div class="hero-list">
+            <div><span>更新対象</span><strong>和牛 / 去勢 / 計</strong></div>
+            <div><span>指標</span><strong>加重平均（税込円）</strong></div>
+            <div><span>出典</span><strong>JA飛騨ミート公開画像</strong></div>
+          </div>
+        </aside>
+      </div>
     </section>
 
     <div class="grid">
-      <section class="panel chart-card">
-        <h2>推移グラフ</h2>
-        <p>2025年11月から2026年4月までの公開分を折れ線で表示しています。</p>
-        <svg id="chart" viewBox="0 0 860 500" role="img" aria-label="和牛去勢計加重平均の推移グラフ"></svg>
+      <section class="panel">
+        <h2>価格サマリー</h2>
+        <p>最新値、期間平均、最高値、最低値をまとめて見られます。</p>
+        <div class="stats" id="stats"></div>
       </section>
 
       <section class="panel">
-        <h2>トピック</h2>
-        <p>直近値、最高値、最低値、期間平均との差をまとめています。</p>
+        <h2>サマリー</h2>
+        <p>直近値、期間平均、最高値・最低値、その開催日をまとめています。</p>
         <div class="meta-list" id="meta"></div>
       </section>
     </div>
 
+    <section class="panel detail-chart" style="margin-top: 20px;">
+      <h2>推移グラフ</h2>
+      <p>週次の相場がどこで失速し、どこで持ち直したかを折れ線で追えます。</p>
+      <svg id="chart-detail" viewBox="0 0 860 500" role="img" aria-label="和牛去勢計加重平均の推移グラフ（詳細）"></svg>
+    </section>
+
     <section class="panel" style="margin-top: 20px;">
       <h2>抽出データ</h2>
-      <p>値は公開されている相場画像の「和牛 / 去勢 / 計 / 加重平均」欄から拾っています。</p>
+      <p>数値は公開されている相場画像の「和牛 / 去勢 / 計 / 加重平均」欄から抽出しています。</p>
       <table>
         <thead>
           <tr>
@@ -260,8 +477,10 @@
       </table>
       <p class="note" id="note">
         出典:
-        <a href="https://hidameat.or.jp/market_post" target="_blank" rel="noreferrer">JA飛騨ミート 牛枝肉相場</a>
-        。数値抽出は保存済み GIF 画像から行っているため、必要なら元画像で再確認できます。
+        <a href="https://hidameat.or.jp/market_post" target="_blank" rel="noreferrer">JA飛騨ミート 牛枝肉相場ページ</a>
+        /
+        <a href="https://hidameat.or.jp/" target="_blank" rel="noreferrer">JA飛騨ミート公式サイト</a>
+        。必要に応じて元画像でも再確認できます。
       </p>
     </section>
   </div>
@@ -346,14 +565,11 @@
         hour: "2-digit",
         minute: "2-digit"
       }).format(new Date(generatedAt));
-      document.getElementById("note").insertAdjacentHTML(
-        "beforeend",
-        `<br>最終更新: ${generated}`
-      );
+      document.getElementById("note").insertAdjacentHTML("beforeend", `<br>最終更新: ${generated}`);
     }
 
-    function renderChart() {
-      const svg = document.getElementById("chart");
+    function renderChart(targetId) {
+      const svg = document.getElementById(targetId);
       const width = 860;
       const height = 500;
       const margin = { top: 32, right: 24, bottom: 92, left: 72 };
@@ -377,18 +593,18 @@
         const value = minY + ((maxY - minY) / yTicks) * i;
         const yPos = y(value);
         return `
-          <line x1="${margin.left}" y1="${yPos}" x2="${margin.left + plotWidth}" y2="${yPos}" stroke="rgba(92,63,37,0.12)" />
-          <text x="${margin.left - 12}" y="${yPos + 5}" text-anchor="end" font-size="12" fill="#685f58">${fmtYen.format(Math.round(value))}</text>
+          <line x1="${margin.left}" y1="${yPos}" x2="${margin.left + plotWidth}" y2="${yPos}" stroke="rgba(214,170,85,0.12)" />
+          <text x="${margin.left - 12}" y="${yPos + 5}" text-anchor="end" font-size="12" fill="#cbb795">${fmtYen.format(Math.round(value))}</text>
         `;
       }).join("");
 
       const labels = enriched.map((item, index) => `
-        <text x="${x(index)}" y="${height - 44}" text-anchor="end" transform="rotate(-35 ${x(index)} ${height - 44})" font-size="11" fill="#685f58">${item.date.slice(5)}</text>
+        <text x="${x(index)}" y="${height - 44}" text-anchor="end" transform="rotate(-35 ${x(index)} ${height - 44})" font-size="11" fill="#cbb795">${item.date.slice(5)}</text>
       `).join("");
 
       const points = enriched.map((item, index) => `
         <g>
-          <circle cx="${x(index)}" cy="${y(item.weightedAverage)}" r="5.5" fill="#fff7ef" stroke="#a23e2c" stroke-width="3"></circle>
+          <circle cx="${x(index)}" cy="${y(item.weightedAverage)}" r="5.5" fill="#16110f" stroke="#d6aa55" stroke-width="3"></circle>
           <title>${item.dateLabel}: ${fmtYen.format(item.weightedAverage)} 円</title>
         </g>
       `).join("");
@@ -396,24 +612,32 @@
       svg.innerHTML = `
         <defs>
           <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="#a23e2c" stop-opacity="0.30" />
-            <stop offset="100%" stop-color="#a23e2c" stop-opacity="0.02" />
+            <stop offset="0%" stop-color="#d6aa55" stop-opacity="0.32" />
+            <stop offset="100%" stop-color="#d6aa55" stop-opacity="0.03" />
           </linearGradient>
         </defs>
         ${gridLines}
-        <line x1="${margin.left}" y1="${margin.top + plotHeight}" x2="${margin.left + plotWidth}" y2="${margin.top + plotHeight}" stroke="rgba(92,63,37,0.22)" />
+        <line x1="${margin.left}" y1="${margin.top + plotHeight}" x2="${margin.left + plotWidth}" y2="${margin.top + plotHeight}" stroke="rgba(214,170,85,0.22)" />
         <path d="${area}" fill="url(#areaFill)"></path>
-        <path d="${path}" fill="none" stroke="#a23e2c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="${path}" fill="none" stroke="#d6aa55" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
         ${points}
         ${labels}
-        <text x="${margin.left}" y="20" font-size="13" fill="#685f58">税込円</text>
+        <text x="${margin.left}" y="20" font-size="13" fill="#cbb795">税込円</text>
       `;
     }
 
     renderStats();
     renderTable();
-    renderChart();
+    renderChart("chart");
+    renderChart("chart-detail");
     renderNote();
   </script>
 </body>
 </html>
+    .hero-chart {
+      min-height: 0;
+    }
+
+    .detail-chart {
+      min-height: 540px;
+    }
