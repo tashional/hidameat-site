@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>飛騨ミート 和牛去勢 計 加重平均</title>
+  <style>
+    :root {
+      --bg: #f5efe5;
+      --paper: rgba(255, 250, 243, 0.9);
+      --ink: #1f1a17;
+      --muted: #685f58;
+      --line: rgba(92, 63, 37, 0.18);
+      --accent: #a23e2c;
+      --accent-soft: #eab68f;
+      --accent-2: #245e55;
+      --shadow: 0 18px 45px rgba(65, 44, 28, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "Hiragino Sans", "Yu Gothic", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(234, 182, 143, 0.7), transparent 35%),
+        linear-gradient(180deg, #fbf5ec 0%, #f2e8db 100%);
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 32px auto 48px;
+    }
+
+    .hero {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255, 249, 240, 0.96), rgba(252, 240, 226, 0.88));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -90px auto;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(162, 62, 44, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(36, 94, 85, 0.09);
+      color: var(--accent-2);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    h1 {
+      margin: 18px 0 10px;
+      font-size: clamp(30px, 6vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .stat {
+      padding: 18px 18px 16px;
+      border-radius: 22px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      display: block;
+      margin-top: 8px;
+      font-size: clamp(22px, 4vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.45fr 0.95fr;
+      gap: 20px;
+      margin-top: 22px;
+    }
+
+    .panel {
+      padding: 22px;
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background: rgba(255, 252, 247, 0.86);
+      box-shadow: var(--shadow);
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .panel p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .chart-card {
+      min-height: 520px;
+    }
+
+    #chart {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(162, 62, 44, 0.05), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(250, 243, 233, 0.94));
+      border: 1px solid rgba(92, 63, 37, 0.1);
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 249, 240, 0.8);
+      border: 1px solid rgba(92, 63, 37, 0.1);
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th,
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(92, 63, 37, 0.12);
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    tbody tr:hover {
+      background: rgba(162, 62, 44, 0.05);
+    }
+
+    .note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .note a {
+      color: var(--accent);
+    }
+
+    @media (max-width: 900px) {
+      .stats,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-card {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">JA飛騨ミート / 牛枝肉相場</div>
+      <h1>和牛 去勢 計 の加重平均を<br>時系列で可視化</h1>
+      <p class="lead">
+        JA飛騨ミートの公開画像から、各開催日の「和牛 / 去勢 / 計 / 加重平均」を抽出して並べたローカル閲覧用ページです。
+        抽出対象は公開中の 20 回分で、単位は税込円です。
+      </p>
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <div class="grid">
+      <section class="panel chart-card">
+        <h2>推移グラフ</h2>
+        <p>2025年11月から2026年4月までの公開分を折れ線で表示しています。</p>
+        <svg id="chart" viewBox="0 0 860 500" role="img" aria-label="和牛去勢計加重平均の推移グラフ"></svg>
+      </section>
+
+      <section class="panel">
+        <h2>トピック</h2>
+        <p>直近値、最高値、最低値、期間平均との差をまとめています。</p>
+        <div class="meta-list" id="meta"></div>
+      </section>
+    </div>
+
+    <section class="panel" style="margin-top: 20px;">
+      <h2>抽出データ</h2>
+      <p>値は公開されている相場画像の「和牛 / 去勢 / 計 / 加重平均」欄から拾っています。</p>
+      <table>
+        <thead>
+          <tr>
+            <th>開催日</th>
+            <th>加重平均</th>
+            <th>前回差</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p class="note" id="note">
+        出典:
+        <a href="https://hidameat.or.jp/market_post" target="_blank" rel="noreferrer">JA飛騨ミート 牛枝肉相場</a>
+        。数値抽出は保存済み GIF 画像から行っているため、必要なら元画像で再確認できます。
+      </p>
+    </section>
+  </div>
+
+  <script src="./data.js"></script>
+  <script>
+    const data = Array.isArray(window.HIDAMEAT_DATA) ? window.HIDAMEAT_DATA : [];
+    const generatedAt = window.HIDAMEAT_GENERATED_AT || null;
+
+    const fmtYen = new Intl.NumberFormat("ja-JP");
+    const fmtDate = new Intl.DateTimeFormat("ja-JP", {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+
+    const enriched = data.map((item, index) => ({
+      ...item,
+      dateLabel: fmtDate.format(new Date(`${item.date}T00:00:00`)),
+      diff: index === 0 ? null : item.weightedAverage - data[index - 1].weightedAverage
+    }));
+
+    const values = enriched.map(item => item.weightedAverage);
+    const latest = enriched[enriched.length - 1];
+    const highest = enriched.reduce((a, b) => (a.weightedAverage > b.weightedAverage ? a : b));
+    const lowest = enriched.reduce((a, b) => (a.weightedAverage < b.weightedAverage ? a : b));
+    const average = Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+
+    function diffLabel(value) {
+      if (value === null) return "初回";
+      if (value === 0) return "±0";
+      return `${value > 0 ? "+" : ""}${fmtYen.format(value)}`;
+    }
+
+    function renderStats() {
+      const statItems = [
+        ["最新", `${fmtYen.format(latest.weightedAverage)} 円`],
+        ["期間平均", `${fmtYen.format(average)} 円`],
+        ["最高", `${fmtYen.format(highest.weightedAverage)} 円`],
+        ["最低", `${fmtYen.format(lowest.weightedAverage)} 円`]
+      ];
+
+      document.getElementById("stats").innerHTML = statItems.map(([label, value]) => `
+        <div class="stat">
+          <span class="stat-label">${label}</span>
+          <span class="stat-value">${value}</span>
+        </div>
+      `).join("");
+
+      const metaItems = [
+        ["最新開催日", latest.dateLabel],
+        ["最新の前回差", diffLabel(latest.diff)],
+        ["最高値の開催日", highest.dateLabel],
+        ["最低値の開催日", lowest.dateLabel],
+        ["最新と期間平均の差", diffLabel(latest.weightedAverage - average)]
+      ];
+
+      document.getElementById("meta").innerHTML = metaItems.map(([label, value]) => `
+        <div class="meta-item">
+          <span>${label}</span>
+          <strong>${value}</strong>
+        </div>
+      `).join("");
+    }
+
+    function renderTable() {
+      document.getElementById("rows").innerHTML = enriched.map(item => `
+        <tr>
+          <td>${item.dateLabel}</td>
+          <td>${fmtYen.format(item.weightedAverage)} 円</td>
+          <td>${item.diff === null ? "初回" : `${diffLabel(item.diff)} 円`}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderNote() {
+      if (!generatedAt) return;
+      const generated = new Intl.DateTimeFormat("ja-JP", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(generatedAt));
+      document.getElementById("note").insertAdjacentHTML(
+        "beforeend",
+        `<br>最終更新: ${generated}`
+      );
+    }
+
+    function renderChart() {
+      const svg = document.getElementById("chart");
+      const width = 860;
+      const height = 500;
+      const margin = { top: 32, right: 24, bottom: 92, left: 72 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const pad = 80;
+      const minY = Math.floor((min - pad) / 50) * 50;
+      const maxY = Math.ceil((max + pad) / 50) * 50;
+      const xStep = plotWidth / (values.length - 1);
+      const yTicks = 5;
+
+      const x = index => margin.left + index * xStep;
+      const y = value => margin.top + ((maxY - value) / (maxY - minY)) * plotHeight;
+
+      const path = enriched.map((item, index) => `${index === 0 ? "M" : "L"} ${x(index).toFixed(2)} ${y(item.weightedAverage).toFixed(2)}`).join(" ");
+      const area = `${path} L ${x(values.length - 1).toFixed(2)} ${(margin.top + plotHeight).toFixed(2)} L ${x(0).toFixed(2)} ${(margin.top + plotHeight).toFixed(2)} Z`;
+
+      const gridLines = Array.from({ length: yTicks + 1 }, (_, i) => {
+        const value = minY + ((maxY - minY) / yTicks) * i;
+        const yPos = y(value);
+        return `
+          <line x1="${margin.left}" y1="${yPos}" x2="${margin.left + plotWidth}" y2="${yPos}" stroke="rgba(92,63,37,0.12)" />
+          <text x="${margin.left - 12}" y="${yPos + 5}" text-anchor="end" font-size="12" fill="#685f58">${fmtYen.format(Math.round(value))}</text>
+        `;
+      }).join("");
+
+      const labels = enriched.map((item, index) => `
+        <text x="${x(index)}" y="${height - 44}" text-anchor="end" transform="rotate(-35 ${x(index)} ${height - 44})" font-size="11" fill="#685f58">${item.date.slice(5)}</text>
+      `).join("");
+
+      const points = enriched.map((item, index) => `
+        <g>
+          <circle cx="${x(index)}" cy="${y(item.weightedAverage)}" r="5.5" fill="#fff7ef" stroke="#a23e2c" stroke-width="3"></circle>
+          <title>${item.dateLabel}: ${fmtYen.format(item.weightedAverage)} 円</title>
+        </g>
+      `).join("");
+
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="areaFill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#a23e2c" stop-opacity="0.30" />
+            <stop offset="100%" stop-color="#a23e2c" stop-opacity="0.02" />
+          </linearGradient>
+        </defs>
+        ${gridLines}
+        <line x1="${margin.left}" y1="${margin.top + plotHeight}" x2="${margin.left + plotWidth}" y2="${margin.top + plotHeight}" stroke="rgba(92,63,37,0.22)" />
+        <path d="${area}" fill="url(#areaFill)"></path>
+        <path d="${path}" fill="none" stroke="#a23e2c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        ${points}
+        ${labels}
+        <text x="${margin.left}" y="20" font-size="13" fill="#685f58">税込円</text>
+      `;
+    }
+
+    renderStats();
+    renderTable();
+    renderChart();
+    renderNote();
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "hidameat-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "JA飛騨ミートの牛枝肉相場をGitHub Pagesで公開する静的サイト",
+  "scripts": {
+    "update": "node update_hidameat_site.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "sharp": "0.34.3",
+    "tesseract.js": "6.0.1"
+  }
+}
